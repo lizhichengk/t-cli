@@ -60,7 +60,7 @@ const setOption = (projectName, opts) => {
   let package_Json = {};
   setEnvProduction(projectName);
   setVueRouter(package_Json);
-  setProxy(projectName, opts.proxy);
+  setProxy(projectName, opts);
   if (opts.vuex) {
     mainJs_result = { ...mainJs_result, ...VUEX};
     package_Json.dependencies = { ...(package_Json.dependencies || {}), ...{ 'vuex': '^3.1.0', } };
@@ -74,6 +74,8 @@ const setOption = (projectName, opts) => {
   }
   setMainJs(projectName,mainJs_result);
   setPackage(projectName, package_Json);
+  setLocation(projectName);
+  setBuild(projectName);
 }
 
 const setMainJs = (projectName,mainJs_config) => {
@@ -94,13 +96,31 @@ const setPackage = (projectName, config_object ) => {
   }
   fs.writeFileSync(packagePath, JSON.stringify(packageJson, null, 2));
 }
+const setLocation = (projectName) => {
+  const cwd = process.cwd();
+  const filePath = path.join(cwd, `${projectName}/location.d/default.conf`);
+  const mainJs = fs.readFileSync(filePath).toString();
+  const mainJs_result = Handlebars.compile(mainJs)({APP_NAME: projectName});
+  fs.writeFileSync(filePath, mainJs_result);
+}
 
-const setProxy = (projectName = '', options = false) => {
+const setBuild = (projectName) => {
+  const cwd = process.cwd();
+  const filePath = path.join(cwd, `${projectName}/build.sh`);
+  const mainJs = fs.readFileSync(filePath).toString();
+  const mainJs_result = Handlebars.compile(mainJs)({APP_NAME: projectName});
+  fs.writeFileSync(filePath, mainJs_result);
+}
+
+const setProxy = (projectName = '', options) => {
+  const { proxy, name, url } = options;
   let OPTION = { projectName, proxy: true };
-  if (typeof options === 'boolean' && options) {
+  if (typeof proxy === 'boolean' && proxy && !name && !url) {
     OPTION = { ...OPTION, name: projectName, url: TEST_DOCKER};
-  } else if (options.length) {
+  } else if (proxy.length) {
     OPTION = { ...OPTION, name: options[0] || projectName, url: options[1] || TEST_DOCKER };
+  } else if( name && url){
+    OPTION = { ...OPTION, name: name || projectName, url: url || TEST_DOCKER };
   } else {
     OPTION.proxy = false;
   }
