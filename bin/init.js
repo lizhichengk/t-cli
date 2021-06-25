@@ -9,7 +9,7 @@ const download = require('download-git-repo');
 var inquirer = require("inquirer");
 
 const version = require('../package.json').version;
-const { ELEMENT_UI, DOWN_URL, TEST_DOCKER, VUEX } = require('../config/constants');
+const { ELEMENT_UI, DOWN_URL, TEST_URL, VUEX } = require('../config/constants');
 const PROMPT_CONFIG = require('../config/inquirer-config');
 
 program.version(version);
@@ -116,11 +116,11 @@ const setProxy = (projectName = '', options) => {
   const { proxy, name, url } = options;
   let OPTION = { projectName, proxy: true };
   if (typeof proxy === 'boolean' && proxy && !name && !url) {
-    OPTION = { ...OPTION, name: projectName, url: TEST_DOCKER};
+    OPTION = { ...OPTION, name: projectName, url: TEST_URL};
   } else if (proxy.length) {
-    OPTION = { ...OPTION, name: options[0] || projectName, url: options[1] || TEST_DOCKER };
+    OPTION = { ...OPTION, name: options[0] || projectName, url: options[1] || TEST_URL };
   } else if( name && url){
-    OPTION = { ...OPTION, name: name || projectName, url: url || TEST_DOCKER };
+    OPTION = { ...OPTION, name: name || projectName, url: url || TEST_URL };
   } else {
     OPTION.proxy = false;
   }

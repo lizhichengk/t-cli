@@ -13,6 +13,6 @@ const VUEX = {
 
 const DOWN_URL = 'lizhichengk/vue2template';
 
-const TEST_DOCKER = 'https://kffe-docker.suanshubang.com';
+const TEST_URL = '';
 
-module.exports = { ELEMENT_UI, DOWN_URL, TEST_DOCKER, VUEX };
+module.exports = { ELEMENT_UI, DOWN_URL, TEST_URL, VUEX };
